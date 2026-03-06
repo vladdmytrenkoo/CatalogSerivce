@@ -1,0 +1,6 @@
+app:
+  port: 50051
+  migrations_dir: "migrations"
+
+database:
+  spanner_db: "projects/catalog-service/instances/test-instance/databases/catalog-db"

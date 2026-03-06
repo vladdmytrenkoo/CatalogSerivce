@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  spanner:
+    image: gcr.io/cloud-spanner-emulator/emulator
+    platform: linux/amd64
+    container_name: spanner-emulator
+    ports:
+      - "9010:9010"
+      - "9020:9020"
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "9010"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+#  spanner-init:
+#    image: google/cloud-sdk:slim
+#    platform: linux/amd64
+#    depends_on:
+#      spanner:
+#        condition: service_healthy
+#    environment:
+#      - SPANNER_EMULATOR_HOST=spanner:9010
+#      - SPANNER_PROJECT=catalog-service
+#      - SPANNER_INSTANCE=catalog-instance
+#      - SPANNER_DATABASE=catalog-db
+#    entrypoint: >
+#      /bin/bash -c "
+#      gcloud config set auth/disable_credentials true &&
+#      gcloud config set project $${SPANNER_PROJECT} &&
+#      gcloud config set api_endpoint_overrides/spanner http://spanner:9020/ &&
+#      gcloud spanner instances create $${SPANNER_INSTANCE} --config=emulator-config --description='Catalog Instance' --nodes=1 &&
+#      gcloud spanner databases create $${SPANNER_DATABASE} --instance=$${SPANNER_INSTANCE}
+#      "
